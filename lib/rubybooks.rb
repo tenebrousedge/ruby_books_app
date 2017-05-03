@@ -4,11 +4,18 @@ require 'bcrypt'
 
 # Top level namespace module for this project
 module Rubybooks
-  DB = Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://database.db')
+  DB = Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://rubybooks.db')
 
   # Sequel class to interact with books table
   class Book < Sequel::Model
-    many_to_many :users
+    one_to_many :checkouts
+    # TODO: add validation
+  end
+
+  class BooksUsers < Sequel::Model(:books_users)
+    many_to_one :books
+    many_to_one :users
+    # TODO: add validation
   end
 
   # Sequel class to interact with users table
@@ -17,7 +24,7 @@ module Rubybooks
 
     attr_accessor :password, :password_confirmation
 
-    many_to_many :books
+    one_to_many :checkouts
 
     def self.authenticate(username, pass)
       user = first username: username
@@ -40,6 +47,10 @@ module Rubybooks
       validates_length_range 2..32, :username
       errors.add(:password_confirmation, 'Password must match confirmation')\
       unless password != password_confirmation
+    end
+
+    def overdue
+      checkouts.where(due < Time.now).books
     end
   end
 end

@@ -1,0 +1,19 @@
+<form action="/login" method="post">
+  <label for="login_info[username]">Username:</label>
+  <input type="text" name="login_info[username]">
+  <label for="login_info[password]">Password:</label>
+  <input type="password" name="login_info[password]">
+  <button type="submit" name="login">Log In</button>
+</form>
+
+<form action="/signup" method="post">
+  <label for="signup[username]">Username:</label>
+  <input type="text" name="signup[username]">
+  <label for="signup[password]">Password:</label>
+  <input type="password" name="signup[password]">
+  <select name="signup[role]">
+    <option value="user">User</option>
+    <option value="admin">Admin</option>
+  </select>
+  <button type="submit" name="signup">Create Account</button>
+</form>

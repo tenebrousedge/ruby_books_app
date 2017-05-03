@@ -37,7 +37,7 @@ module Sinatra
           success_redirect: nil,  # Override success redirect URL
           failure_redirect: nil,  # Override failure redirect url
         }.merge(options)
-        user = User.authenticate(params[:username], params[:password])
+        user = Rubybooks::User.authenticate(params[:username], params[:password])
         if user.nil?
           flash[:errors] = 'Login failed'
           redir_url = options[:failure_redirect] || request.fullpath
@@ -67,7 +67,7 @@ module Sinatra
           success_redirect: nil,  # Override where to redirect on success
           failure_redirect: nil,  # Override where to redirect on failure
         }.merge(options)
-        user = User.new(params)
+        user = Rubybooks::User.new(params)
         if user.save
           session[:user] = user.id if options[:login]
           redirect options[:success_redirect] ||
@@ -118,11 +118,15 @@ module Sinatra
 
       def current_user
         return unless session[:user]
-        User.get(session[:user])
+        Rubybooks::User.get(session[:user])
       end
 
       def admin?
         current_user && current_user.admin?
+      end
+
+      def user?
+        current_user
       end
     end
   end
